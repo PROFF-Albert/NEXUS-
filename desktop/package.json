@@ -1,0 +1,22 @@
+{
+  "name": "nexus-desktop",
+  "version": "1.0.0",
+  "description": "NEXUS — The Private Developer Operating System (desktop shell)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "dev.nexus.workspace",
+    "productName": "NEXUS",
+    "files": ["main.js", "package.json", "../frontend/**/*", "../backend/**/*"],
+    "mac": { "category": "public.app-category.developer-tools" },
+    "linux": { "target": ["AppImage", "deb"], "category": "Development" },
+    "win": { "target": ["nsis"] }
+  }
+}

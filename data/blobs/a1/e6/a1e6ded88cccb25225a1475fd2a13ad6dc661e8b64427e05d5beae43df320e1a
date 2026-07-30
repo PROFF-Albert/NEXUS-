@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ELEV8 </title>
+    <link rel="stylesheet" href="gym.css">
+</head>
+
+<body>
+
+    <header class="nav-inner" id="site-header">
+        <div class="container navbar">
+            <a class="logo" href="ownersdashboard.html">ELEV<span>8</span></a>
+            <ul class="nav-links">
+                <li><a href="ownersdashboard.html" class="active">Dashboard</a></li>
+                <li><a href="owners-members.html">Members</a></li>
+                <li><a href="subscription.html">Subscriptions</a></li>
+                <li><a href="payment.html">Payments</a></li>
+                <li><a href="gym-profile.html">Gym Profile</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+            <div class="nav-action">
+                <button class="btn" onclick="handleLogout()">Logout</button>
+            </div>
+            <button class="hamburger" id="hamburger" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="mobile-nav" id="mobile-nav">
+        <a href="ownersdashboard.html">Dashboard</a>
+        <a href="owners-members.html">Members</a>
+        <a href="subscription.html">Subscriptions</a>
+        <a href="payment.html">Payments</a>
+        <a href="gym-profile.html">Gym Profile</a>
+        <a href="settings.html">Settings</a>
+        <button class="btn" onclick="handleLogout()">Logout</button>
+    </nav>
+
+    <div class="page-offset"></div>
+
+    <div class="page-banner">
+        <div class="container">
+            <div class="banner-eyebrow">Owner Dashboard</div>
+            <h1>Owner Dashboard</h1>
+            <p>Manage your gym, members, and revenue from one place.</p>
+            <div class="banner-pills">
+                <span class="banner-pill">Members: 0</span>
+                <span class="banner-pill">Attendance: 0 today</span>
+                <span class="banner-pill">Revenue: ₵0</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="container">
+
+            <div class="stats-grid">
+                <div class="stat-card">
+
+                    <div class="stat-label">Total Members</div>
+                    <div class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+
+                    <div class="stat-label">Today's Attendance</div>
+                    <div class="stat-value" id="dashboard-attendance-count">0</div>
+                </div>
+                <div class="stat-card">
+
+                    <div class="stat-label">Revenue</div>
+                    <div class="stat-value accent">₵0</div>
+                </div>
+                <div class="stat-card">
+
+                    <div class="stat-label">Active Subscriptions</div>
+                    <div class="stat-value">0</div>
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top:48px">
+                <h2 class="section-title" style="margin-bottom:0">Your Gym</h2>
+                <a href="gym-profile.html" class="btn btn-secondary btn-sm" id="dashboard-gym-cta">Create Gym
+                    Profile</a>
+            </div>
+            <div class="current-gym-card" style="margin-bottom:48px">
+                <div class="gym-card-img-placeholder gym-logo-preview" id="dashboard-gym-logo"
+                    style="width:260px;height:auto;min-height:160px">
+                    <span>No logo</span>
+                </div>
+                <div class="current-gym-body">
+                    <h3 id="dashboard-gym-name">No gym profile yet</h3>
+                    <p>Status: <span id="dashboard-gym-status">Not created</span></p>
+                    <p>Location: <span id="dashboard-gym-location">-</span></p>
+                    <p>Starting from: <span id="dashboard-gym-price">-</span></p>
+                    <p id="dashboard-gym-description">Create your gym profile to start publishing your listing.</p>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2 class="section-title" style="margin-bottom:0">Today's Check-ins</h2>
+                <button class="btn btn-secondary btn-sm" type="button" id="attendance-refresh-btn">Refresh</button>
+            </div>
+            <div class="card attendance-card" style="margin-bottom:48px">
+                <div class="banner-pills attendance-summary" id="attendance-summary">
+                    <span class="banner-pill">Today: 0</span>
+                    <span class="banner-pill">Unique members: 0</span>
+                    <span class="banner-pill">Latest: —</span>
+                </div>
+                <div class="table-wrapper attendance-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Member</th>
+                                <th>Gym</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-table-body">
+                            <tr>
+                                <td colspan="4" style="text-align:center;color:var(--muted);padding:32px">No check-ins
+                                    recorded yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="action-grid">
+                <div class="action-card" onclick="window.location.href='owners-members.html'">
+                    <div class="action-icon">M</div>
+                    <h4>Members</h4>
+                    <p>Manage member records, access, and attendance in one place.</p>
+                    <button class="btn btn-sm">Manage</button>
+                </div>
+                <div class="action-card" onclick="window.location.href='subscription.html'">
+                    <div class="action-icon">S</div>
+                    <h4>Subscriptions</h4>
+                    <p>Review active plans, expirations, and renewals quickly.</p>
+                    <button class="btn btn-sm">View</button>
+                </div>
+                <div class="action-card" onclick="window.location.href='payment.html'">
+                    <div class="action-icon">P</div>
+                    <h4>Payments</h4>
+                    <p>Track transactions and reconcile revenue without digging around.</p>
+                    <button class="btn btn-sm">View</button>
+                </div>
+                <div class="action-card" onclick="window.location.href='gym-profile.html'">
+                    <div class="action-icon">G</div>
+                    <h4>Gym Profile</h4>
+                    <p>Keep your brand, pricing, and public profile up to date.</p>
+                    <button class="btn btn-sm">Edit</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <span class="footer-logo">ELEV<span>8</span></span>
+                <span>© 2026 ELEV8. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const mobileNav = document.getElementById('mobile-nav');
+        hamburger.addEventListener('click', () => mobileNav.classList.toggle('open'));
+    </script>
+
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="owner-gym.js"></script>
+    <script type="module" src="checkin.js"></script>
+
+</body>
+
+</html>

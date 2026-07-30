@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ELEV8 </title>
+    <link rel="stylesheet" href="gym.css">
+</head>
+
+<body>
+
+    <header class="nav-inner" id="site-header">
+        <div class="container navbar">
+            <a class="logo" href="index.html">ELEV<span>8</span></a>
+            <ul class="nav-links">
+                <li><a href="userdashboard.html" class="active">Dashboard</a></li>
+                <li><a href="gyms.html">Find Gyms</a></li>
+            </ul>
+            <div class="nav-action">
+                <button class="btn" onclick="handleLogout()">Logout</button>
+            </div>
+            <button class="hamburger" id="hamburger" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="mobile-nav" id="mobile-nav">
+        <a href="userdashboard.html">Dashboard</a>
+        <a href="gyms.html">Find Gyms</a>
+        <button class="btn" onclick="handleLogout()">Logout</button>
+    </nav>
+
+    <div class="page-offset"></div>
+
+    <div class="page-banner">
+        <div class="container">
+            <div class="banner-eyebrow">Member Dashboard</div>
+            <h1>Welcome Back </h1>
+            <p>Here's an overview of your fitness activity.</p>
+            <div class="banner-pills">
+                <span class="banner-pill">Membership Active</span>
+                <span class="banner-pill">Gym: Not selected</span>
+                <span class="banner-pill">Recent Activity: 0</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="container">
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Membership</div>
+                    <div class="stat-value accent">Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Workouts</div>
+                    <div class="stat-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Check-ins</div>
+                    <div class="stat-value" id="member-checkin-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Days Left</div>
+                    <div class="stat-value">0</div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2 class="section-title" style="margin-bottom:0">Current Gym</h2>
+                <a href="gyms.html" class="btn btn-secondary btn-sm">Change Gym</a>
+            </div>
+            <div class="current-gym-card" style="margin-bottom:48px">
+                <div class="gym-card-img-placeholder current-gym-img" id="member-gym-logo"
+                    style="width:260px;height:auto;min-height:160px">
+                    GYM</div>
+                <div class="current-gym-body">
+                    <h3 id="member-gym-name">Gym Name</h3>
+                    <p>Location: <span id="member-gym-location">—</span></p>
+                    <p>Phone: <span id="member-gym-phone">—</span></p>
+                    <p>Email: <span id="member-gym-email">—</span></p>
+                </div>
+            </div>
+
+            <div class="card checkin-card" style="margin-bottom:48px">
+                <div class="checkin-copy">
+                    <div class="banner-eyebrow">Daily Check-in</div>
+                    <h3>Check in to your gym</h3>
+                    <p id="member-checkin-status">Sign in and open an active membership to check in for today.</p>
+                    <p class="checkin-meta">Last check-in: <span id="member-last-checkin">—</span></p>
+                </div>
+                <div class="checkin-actions">
+                    <button class="btn" type="button" id="member-checkin-btn" disabled>Check In Now</button>
+                    <span class="checkin-hint">One check-in per day for your active gym.</span>
+                </div>
+            </div>
+
+            <h2 class="section-title">Notifications</h2>
+            <div class="notification-card" style="margin-bottom:48px">
+                <span class="notif-icon">🔔</span>
+                No new notifications
+            </div>
+
+            <div class="section-header">
+                <h2 class="section-title" style="margin-bottom:0">Recent Check-ins</h2>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Gym</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="member-checkin-table-body">
+                        <tr>
+                            <td colspan="3" style="text-align:center;color:var(--muted);padding:32px">No check-ins yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <span class="footer-logo">ELEV<span>8</span></span>
+                <span>© 2026 ELEV8. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const mobileNav = document.getElementById('mobile-nav');
+        hamburger.addEventListener('click', () => mobileNav.classList.toggle('open'));
+    </script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="checkin.js"></script>
+</body>
+
+</html>

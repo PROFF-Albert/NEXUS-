@@ -1,0 +1,16 @@
+interface Props {
+  name: string;
+  city: string;
+  rating: number;
+  price: number;
+}
+
+export function GymCard({ name, city, rating, price }: Props) {
+  return (
+    <article className="gym-card">
+      <h3>{name}</h3>
+      <p>{city} · ★ {rating.toFixed(1)}</p>
+      <span>GH₵ {price}/session</span>
+    </article>
+  );
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ELEV8</title>
+    <link rel="stylesheet" href="gym.css">
+</head>
+
+<body>
+
+    <header class="nav-inner" id="site-header">
+        <div class="container navbar">
+            <a class="logo" href="index.html">ELEV<span>8</span></a>
+            <ul class="nav-links">
+                <li><a href="userdashboard.html">Dashboard</a></li>
+                <li><a href="gyms.html" class="active">Find Gyms</a></li>
+            </ul>
+            <div class="nav-action">
+                <button class="btn" onclick="handleLogout()">Logout</button>
+            </div>
+            <button class="hamburger" id="hamburger" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="mobile-nav" id="mobile-nav">
+        <a href="userdashboard.html">Dashboard</a>
+        <a href="gyms.html">Find Gyms</a>
+        <button class="btn" onclick="handleLogout()">Logout</button>
+    </nav>
+
+    <div class="page-offset"></div>
+
+    <div class="page-banner">
+        <div class="container">
+            <h1>Find a Gym</h1>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="container">
+
+            <div class="search-bar">
+                <input type="text" id="gym-search-input" placeholder="Search by gym name or keyword…">
+                <select id="gym-location-filter">
+                    <option value="">All Locations</option>
+                </select>
+                <select id="gym-price-filter">
+                    <option value="">Any Price</option>
+                    <option value="0-100">Under ₵100/mo</option>
+                    <option value="100-200">₵100–₵200/mo</option>
+                    <option value="200-400">₵200–₵400/mo</option>
+                    <option value="400-999999">₵400+/mo</option>
+                </select>
+
+                <button class="btn" id="gym-search-btn">Search</button>
+            </div>
+
+            <div class="gym-grid" id="gym-results-grid">
+                <p class="table-loading">Loading gyms…</p>
+            </div>
+
+            <div style="text-align:center;margin-top:32px">
+                <button class="btn btn-secondary" id="gym-load-more-btn" style="display:none">Load More Gyms</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <span class="footer-logo">ELEV<span>8</span></span>
+                <span>© 2026 ELEV8. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const mobileNav = document.getElementById('mobile-nav');
+        hamburger.addEventListener('click', () => mobileNav.classList.toggle('open'));
+    </script>
+
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="gyms-listing.js"></script>
+</body>
+
+</html

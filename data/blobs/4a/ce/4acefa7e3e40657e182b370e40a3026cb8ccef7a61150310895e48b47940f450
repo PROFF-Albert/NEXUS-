@@ -1,0 +1,3 @@
+fn main() {
+    println!("weather: 31°C, humid — Accra");
+}

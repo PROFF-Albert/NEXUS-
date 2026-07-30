@@ -1,0 +1,17 @@
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+
+router = APIRouter(prefix="/postings", tags=["postings"])
+
+
+class Posting(BaseModel):
+    debit: str
+    credit: str
+    amount: int
+
+
+@router.post("")
+def create(posting: Posting):
+    if posting.amount <= 0:
+        raise HTTPException(400, "amount must be positive")
+    return {"id": "pst_1", **posting.model_dump()}

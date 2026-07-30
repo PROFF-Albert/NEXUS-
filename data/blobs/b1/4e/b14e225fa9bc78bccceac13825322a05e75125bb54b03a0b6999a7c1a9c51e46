@@ -1,0 +1,11 @@
+from fastapi import FastAPI
+
+from .routers import postings
+
+app = FastAPI(title="Ledger API", version="1.2.0")
+app.include_router(postings.router)
+
+
+@app.get("/health")
+def health() -> dict:
+    return {"ok": True}

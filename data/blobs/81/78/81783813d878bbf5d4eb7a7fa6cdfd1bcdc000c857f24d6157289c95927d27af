@@ -1,0 +1,12 @@
+# Iron Republic
+
+Gym & trainer marketplace.
+
+## Stack
+React · Vite · TypeScript · Supabase
+
+## Run
+```bash
+npm install
+npm run dev
+```
