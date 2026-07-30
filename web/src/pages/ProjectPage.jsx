@@ -1,5 +1,5 @@
 // PRD §10 — Project Page with all sixteen sections.
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, bytes, dateStr } from '../lib/api';
@@ -24,13 +24,25 @@ export default function ProjectPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [form, setForm] = useState({});
 
-  const { data: project, isLoading, error } = useQuery({
+  const { data: projectData, isLoading, error } = useQuery({
     queryKey: ['project', id],
     queryFn: () => api.get(`/projects/${id}`),
   });
 
+  const project = useMemo(() => {
+    if (!projectData) return null;
+    if (projectData.project && typeof projectData.project === 'object') {
+      return {
+        ...projectData.project,
+        workspace: projectData.workspace,
+        counts: projectData.counts || projectData.project.counts || {},
+      };
+    }
+    return projectData;
+  }, [projectData]);
+
   useEffect(() => {
-    if (project) document.title = `${project.name} — NEXUS`;
+    if (project) document.title = `${project.name || 'Untitled Project'} — NEXUS`;
     return () => { document.title = 'NEXUS'; };
   }, [project]);
 
@@ -95,7 +107,8 @@ export default function ProjectPage() {
     );
   }
 
-  const c = project.counts || {};
+  const c = project?.counts || {};
+  const projectName = project?.name || 'Untitled Project';
   const TABS = [
     { id: 'overview', label: 'Overview', icon: 'layout-dashboard' },
     { id: 'files', label: 'Files', icon: 'folder', count: project.fileCount },
@@ -117,10 +130,10 @@ export default function ProjectPage() {
 
   const openEdit = () => {
     setForm({
-      name: project.name, description: project.description, category: project.category,
-      framework: project.framework, language: project.language, status: project.status,
-      color: project.color, icon: project.icon, tags: project.tags || [],
-      collection: project.collection,
+      name: projectName, description: project?.description || '', category: project?.category || 'Application',
+      framework: project?.framework || '', language: project?.language || '', status: project?.status || 'Planning',
+      color: project?.color || '#6366f1', icon: project?.icon || 'rocket', tags: project?.tags || [],
+      collection: project?.collection || '',
     });
     setEditing(true);
   };
@@ -130,27 +143,27 @@ export default function ProjectPage() {
       title={(
         <span className="row" style={{ gap: 11, display: 'inline-flex' }}>
           <span style={{
-            width: 32, height: 32, borderRadius: 10, background: project.color,
+            width: 32, height: 32, borderRadius: 10, background: project?.color || '#6366f1',
             display: 'grid', placeItems: 'center', color: '#fff',
           }}>
-            <Icon name={project.icon} size={16} />
+            <Icon name={project?.icon || 'rocket'} size={16} />
           </span>
-          {project.name}
+          {projectName}
         </span>
       )}
       subtitle={(
         <span className="row" style={{ gap: 9, flexWrap: 'wrap' }}>
-          <StatusBadge status={project.status} />
-          <span>{[project.language, project.framework].filter(Boolean).join(' · ') || project.category}</span>
+          <StatusBadge status={project?.status || 'Planning'} />
+          <span>{[project?.language, project?.framework].filter(Boolean).join(' · ') || project?.category || 'Application'}</span>
           <span>·</span>
-          <span>{bytes(project.storageUsed)}</span>
+          <span>{bytes(project?.storageUsed)}</span>
           <span>·</span>
-          <span>created {dateStr(project.createdAt)}</span>
+          <span>created {dateStr(project?.createdAt)}</span>
         </span>
       )}
       actions={(
         <>
-          <button className="btn btn-sm" onClick={() => nav(`/assistant?project=${project.id}`)}>
+          <button className="btn btn-sm" onClick={() => nav(`/assistant?project=${project?.id}`)}>
             <Icon name="sparkles" size={13} /> AI
           </button>
           <button className="btn btn-sm" onClick={() => snapshot.mutate()} disabled={snapshot.isPending}
@@ -164,18 +177,18 @@ export default function ProjectPage() {
               {project.favorite ? 'Remove favorite' : 'Add to favorites'}
             </MenuItem>
             <MenuItem icon="pin" onClick={() => update.mutate({ pinned: !project.pinned })}>
-              {project.pinned ? 'Unpin' : 'Pin to workspace'}
+              {project?.pinned ? 'Unpin' : 'Pin to workspace'}
             </MenuItem>
             <MenuItem icon="download"
-                      onClick={() => api.download(`/projects/${project.id}/export`, `${project.name}.zip`)}>
+                      onClick={() => api.download(`/projects/${project?.id}/export`, `${projectName}.zip`)}>
               Export as ZIP
             </MenuItem>
             <MenuItem icon="package" onClick={() => {
-              const name = window.prompt('Template name', `${project.name} template`);
+              const name = window.prompt('Template name', `${projectName} template`);
               if (name) saveAsTemplate.mutate(name);
             }}>Save as template</MenuItem>
-            <MenuItem icon="archive" onClick={() => update.mutate({ archived: !project.archived })}>
-              {project.archived ? 'Unarchive' : 'Archive project'}
+            <MenuItem icon="archive" onClick={() => update.mutate({ archived: !project?.archived })}>
+              {project?.archived ? 'Unarchive' : 'Archive project'}
             </MenuItem>
             <MenuItem icon="trash-2" danger onClick={() => setConfirmDelete(true)}>Delete project</MenuItem>
           </Dropdown>
@@ -208,12 +221,12 @@ export default function ProjectPage() {
                 <Icon name="pencil" size={14} /> Edit name, description, stack and appearance
               </button>
               <button className="btn" style={{ justifyContent: 'flex-start' }}
-                      onClick={() => api.download(`/projects/${project.id}/export`, `${project.name}.zip`)}>
+                      onClick={() => api.download(`/projects/${project?.id}/export`, `${projectName}.zip`)}>
                 <Icon name="download" size={14} /> Export all files as ZIP
               </button>
               <button className="btn" style={{ justifyContent: 'flex-start' }}
                       onClick={() => {
-                        const name = window.prompt('Template name', `${project.name} template`);
+                        const name = window.prompt('Template name', `${projectName} template`);
                         if (name) saveAsTemplate.mutate(name);
                       }}>
                 <Icon name="package" size={14} /> Save this project as a reusable template
@@ -310,7 +323,7 @@ export default function ProjectPage() {
       </Modal>
 
       <Confirm open={confirmDelete} onClose={() => setConfirmDelete(false)}
-               title={`Delete ${project.name}?`} confirmLabel="Delete permanently"
+               title={`Delete ${projectName}?`} confirmLabel="Delete permanently"
                message="Every file, note, task, snapshot, secret and deployment for this project will be permanently removed. This cannot be undone."
                onConfirm={() => remove.mutate()} />
     </Page>

@@ -161,13 +161,13 @@ export default function FilesTab({ project, initialFileId }) {
     return next;
   });
 
-  const doUpload = useCallback(async (files, relPaths) => {
+  const doUpload = useCallback(async (files, relPaths, explicitFolderId = null) => {
     if (!files.length) return;
     setUploading(files.length);
     const form = new FormData();
     files.forEach((f) => form.append('files', f));
     if (relPaths?.length) form.append('paths', relPaths.join('|'));
-    const folderId = selected?.folderId ?? (menu?.type === 'folder' ? menu.data.id : null);
+    const folderId = explicitFolderId ?? selected?.folderId ?? (menu?.type === 'folder' ? menu.data.id : null);
     if (folderId) form.append('folder_id', String(folderId));
     try {
       const res = await api.upload(`/projects/${project.id}/files/upload`, form);
@@ -181,6 +181,44 @@ export default function FilesTab({ project, initialFileId }) {
     setUploading(0);
   }, [project.id, selected, menu]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const readAllEntries = useCallback((reader) => new Promise((resolve) => {
+    const entries = [];
+    const readBatch = () => {
+      reader.readEntries((batch) => {
+        if (!batch.length) {
+          resolve(entries);
+          return;
+        }
+        entries.push(...batch);
+        readBatch();
+      });
+    };
+    readBatch();
+  }), []);
+
+  const walkEntry = useCallback(async (entry, prefix, files, paths) => {
+    if (entry.isFile) {
+      await new Promise((resolve) => {
+        entry.file((f) => {
+          files.push(f);
+          paths.push(`${prefix}${f.name}`);
+          resolve();
+        });
+      });
+      return;
+    }
+
+    if (entry.isDirectory) {
+      const reader = entry.createReader();
+      const children = await readAllEntries(reader);
+      for (const child of children) {
+        // Folder uploads can contain nested trees; recurse until every entry is captured.
+        // eslint-disable-next-line no-await-in-loop
+        await walkEntry(child, `${prefix}${entry.name}/`, files, paths);
+      }
+    }
+  }, [readAllEntries]);
+
   const onDrop = async (e) => {
     e.preventDefault();
     setDragOver(false);
@@ -188,21 +226,10 @@ export default function FilesTab({ project, initialFileId }) {
     const entries = items.map((i) => i.webkitGetAsEntry?.()).filter(Boolean);
     if (entries.some((en) => en?.isDirectory)) {
       const files = []; const paths = [];
-      const walk = (entry, prefix) => new Promise((resolve) => {
-        if (entry.isFile) {
-          entry.file((f) => { files.push(f); paths.push(`${prefix}${f.name}`); resolve(); });
-        } else if (entry.isDirectory) {
-          const reader = entry.createReader();
-          reader.readEntries(async (list) => {
-            for (const child of list) await walk(child, `${prefix}${entry.name}/`); // eslint-disable-line no-await-in-loop
-            resolve();
-          });
-        } else resolve();
-      });
-      await Promise.all(entries.map((en) => walk(en, '')));
-      await doUpload(files, paths);
+      await Promise.all(entries.map((en) => walkEntry(en, '', files, paths)));
+      await doUpload(files, paths, selected?.folderId ?? null);
     } else {
-      await doUpload(Array.from(e.dataTransfer.files));
+      await doUpload(Array.from(e.dataTransfer.files), undefined, selected?.folderId ?? null);
     }
   };
 
@@ -437,11 +464,11 @@ export default function FilesTab({ project, initialFileId }) {
 
       {/* hidden inputs */}
       <input ref={inputRef} type="file" multiple hidden
-             onChange={(e) => { doUpload(Array.from(e.target.files)); e.target.value = ''; }} />
+             onChange={(e) => { doUpload(Array.from(e.target.files), undefined, selected?.folderId ?? null); e.target.value = ''; }} />
       <input ref={folderInputRef} type="file" multiple hidden webkitdirectory="" directory=""
              onChange={(e) => {
                const files = Array.from(e.target.files);
-               doUpload(files, files.map((f) => f.webkitRelativePath || f.name));
+               doUpload(files, files.map((f) => f.webkitRelativePath || f.name), selected?.folderId ?? null);
                e.target.value = '';
              }} />
 
